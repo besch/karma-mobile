@@ -80,3 +80,25 @@ export async function fetchUserAnalytics(userId: string): Promise<{ actions?: an
   const res = await fetch(url);
   return res.json();
 }
+
+export async function fetchPublicKarmaActions(): Promise<{ actions?: any[]; error?: string }> {
+  const url = `${process.env.EXPO_PUBLIC_API_BASE_URL}/api/karma/public`;
+  const res = await fetch(url);
+  return res.json();
+}
+
+export async function fetchGroups(): Promise<{ groups?: any[]; error?: string }> {
+  const url = `${process.env.EXPO_PUBLIC_API_BASE_URL}/api/groups/list`;
+  const res = await fetch(url);
+  return res.json();
+}
+
+export async function joinGroup(groupId: string, userId: string): Promise<{ message?: string; error?: string }> {
+  const url = `${process.env.EXPO_PUBLIC_API_BASE_URL}/api/groups/join`;
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ groupId, userId }),
+  });
+  return res.json();
+}

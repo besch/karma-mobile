@@ -9,6 +9,8 @@ import MapScreen from '../screens/MapScreen';
 import LeaderboardScreen from '../screens/LeaderboardScreen';
 import ChallengesScreen from '../screens/ChallengesScreen';
 import HelpScreen from '../screens/HelpScreen';
+import PublicFeedScreen from '../screens/PublicFeedScreen';
+import GroupsScreen from '../screens/GroupsScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -24,6 +26,8 @@ export default function RootStack() {
         <Stack.Screen name="Leaderboard" component={LeaderboardScreen} />
         <Stack.Screen name="Challenges" component={ChallengesScreen} />
         <Stack.Screen name="Help" component={HelpScreen} />
+        <Stack.Screen name="PublicFeed" component={PublicFeedScreen} options={{ title: 'Public Karma Feed' }} />
+        <Stack.Screen name="Groups" component={GroupsScreen} options={{ title: 'Karma Groups' }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
