@@ -1,47 +1,58 @@
 import React from 'react';
-import { View, Text, StyleSheet, Animated } from 'react-native';
+import { Animated, View, Text, StyleSheet } from 'react-native';
+import Svg, { Circle } from 'react-native-svg';
 
-interface GaugeProps {
-  value: number; // from 0 to 100
-}
-
-export const InteractiveGauge: React.FC<GaugeProps> = ({ value }) => {
-  // Use a ref so the Animated.Value persists over renders.
+export function InteractiveGauge({ value, maxValue }: { value: number; maxValue: number; }) {
   const animatedValue = React.useRef(new Animated.Value(0)).current;
+
+  const radius = 50;
+  const circumference = 2 * Math.PI * radius;
+  const strokeDashoffset = animatedValue.interpolate({
+    inputRange: [0, maxValue],
+    outputRange: [circumference, 0],
+    extrapolate: 'clamp',
+  });
 
   React.useEffect(() => {
     Animated.timing(animatedValue, {
       toValue: value,
-      duration: 800,
+      duration: 1000,
       useNativeDriver: false,
     }).start();
   }, [value]);
 
   return (
     <View style={styles.container}>
-      <Animated.View style={[styles.gauge, { width: animatedValue.interpolate({
-        inputRange: [0, 100],
-        outputRange: ['0%', '100%'],
-      }) }]} />
-      <Text style={styles.label}>{value}% Karma Today</Text>
+      <Svg height="120" width="120">
+        <Circle
+          stroke="#ccc"
+          fill="none"
+          cx="60"
+          cy="60"
+          r={radius}
+          strokeWidth="10"
+        />
+        <AnimatedCircle
+          stroke="#4caf50"
+          fill="none"
+          cx="60"
+          cy="60"
+          r={radius}
+          strokeWidth="10"
+          strokeDasharray={circumference}
+          strokeDashoffset={strokeDashoffset}
+        />
+      </Svg>
+      <Text style={styles.text}>{value}/{maxValue}</Text>
     </View>
   );
-};
+}
+
+const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 const styles = StyleSheet.create({
-  container: {
-    marginVertical: 20,
-    alignItems: 'center',
-  },
-  gauge: {
-    height: 20,
-    backgroundColor: '#4caf50',
-    borderRadius: 10,
-    alignSelf: 'flex-start',
-  },
-  label: {
-    marginTop: 10,
-    fontSize: 16,
-    fontWeight: '600',
-  },
-}); 
+  container: { alignItems: 'center', justifyContent: 'center' },
+  text: { marginTop: 10, fontSize: 20, fontWeight: 'bold' },
+});
+
+export default InteractiveGauge; 
