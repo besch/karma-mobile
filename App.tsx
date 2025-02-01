@@ -3,8 +3,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 // Import screens
-import HomeScreen from './screens/HomeScreen';
-import MapScreen from './screens/MapScreen';
+import HomeScreen from '@/screens/HomeScreen';
+import MapScreen from '@/screens/MapScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import SubmissionScreen from './screens/SubmissionScreen';
 import AuthScreen from './screens/AuthScreen'; // Optional: for authentication flow

@@ -1,40 +1,66 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import MapView, { Marker, Region } from 'react-native-maps';
 import * as Location from 'expo-location';
+import { useQuery } from 'react-query';
+import { fetchNearbyKarmaActions } from '../api';
 
-export default function MapScreen() {
-  const [region, setRegion] = useState<Region | null>(null);
+export function MapScreen() {
+  const [region, setRegion] = React.useState<Region | null>(null);
 
-  useEffect(() => {
+  React.useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status === 'granted') {
-        let location = await Location.getCurrentPositionAsync({});
-        setRegion({
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
-          latitudeDelta: 0.05,
-          longitudeDelta: 0.05,
-        });
+      if (status !== 'granted') {
+        console.error('Permission to access location was denied');
+        return;
       }
+      let location = await Location.getCurrentPositionAsync({});
+      const { latitude, longitude } = location.coords;
+      setRegion({
+        latitude,
+        longitude,
+        latitudeDelta: 0.05,
+        longitudeDelta: 0.05,
+      });
     })();
   }, []);
 
-  if (!region) {
-    return <ActivityIndicator style={{ flex: 1 }} />;
+  const { data, isLoading, error } = useQuery(
+    ['nearbyActions', region],
+    () => {
+      if (!region) return Promise.resolve([]);
+      return fetchNearbyKarmaActions(region.latitude, region.longitude);
+    },
+    {
+      enabled: !!region,
+    }
+  );
+
+  if (!region || isLoading) {
+    return (
+      <View style={styles.center}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
   }
 
   return (
-    <View style={styles.container}>
-      <MapView style={styles.map} region={region}>
-        <Marker coordinate={region} title="Your Location" description="Start here" />
-      </MapView>
-    </View>
+    <MapView style={styles.map} region={region}>
+      {data && data.map((action: any) => (
+        <Marker
+          key={action.id}
+          coordinate={{ latitude: action.latitude, longitude: action.longitude }}
+          title={action.action_type}
+          description={action.description}
+        />
+      ))}
+    </MapView>
   );
 }
 
+export default MapScreen;
 const styles = StyleSheet.create({
-  container: { flex: 1 },
   map: { flex: 1 },
+  center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
 }); 

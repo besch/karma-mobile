@@ -1,94 +1,64 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
-import CalendarStrip from 'react-native-calendar-strip';
-import moment, { Moment } from 'moment';
-import { Svg, Circle, Text as SvgText } from 'react-native-svg';
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import CalendarStrip from "react-native-calendar-strip";
+import moment from 'moment';
+import { InteractiveGauge } from '@/components/InteractiveGauge';
 
-export default function HomeScreen() {
-  const [selectedDate, setSelectedDate] = useState<Moment>(moment());
-  const handleDateSelected = (date: Moment) => setSelectedDate(date);
+export function HomeScreen() {
+  const [selectedDate, setSelectedDate] = React.useState(moment());
+  const [karma, setKarma] = React.useState(70); // stub: fetch actual karma from the store or API
+  const minDate = moment().subtract(7, 'days');
+  const maxDate = moment().add(7, 'days');
+
+  const handleDateSelected = (date: moment.Moment) => {
+    setSelectedDate(date);
+    // TODO: refetch karma for that date if needed
+  };
 
   return (
     <View style={styles.container}>
-      <View style={[styles.gaugeContainer, { width: Dimensions.get('window').width, height: 200 }]}>
-        <Svg width="200" height="200">
-          {/* Background Circle */}
-          <Circle cx="100" cy="100" r="90" stroke="#e6e6e6" strokeWidth="15" fill="none" />
-          {/* Foreground Circle representing karma meter; animation can be enhanced using react-native-reanimated */}
-          <Circle 
-            cx="100" 
-            cy="100" 
-            r="90" 
-            stroke="green" 
-            strokeWidth="15" 
-            fill="none"
-            strokeDasharray="565" // approximate circumference
-            strokeDashoffset={565 - (565 * 0.7)} // 70% progress as an example
-          />
-          <SvgText
-            x="100"
-            y="110"
-            textAnchor="middle"
-            fill="#333"
-            fontSize="24"
-            fontWeight="bold">
-            70%
-          </SvgText>
-        </Svg>
-      </View>
+      <Text style={styles.header}>KarmaMeter Dashboard</Text>
       <CalendarStrip
-        calendarAnimation={{ type: 'sequence', duration: 30 }}
+        calendarAnimation={{ type: "sequence", duration: 30 }}
         daySelectionAnimation={{
-          type: 'border',
+          type: "border",
           duration: 200,
           borderWidth: 0,
-          borderHighlightColor: 'transparent',
+          borderHighlightColor: "transparent",
         }}
         style={styles.calendar}
-        calendarHeaderStyle={{ display: 'none' }}
-        dateNumberStyle={{ color: '#666666', fontSize: 16 }}
-        dateNameStyle={{ color: '#666666', fontSize: 12 }}
+        calendarHeaderStyle={{ display: "none" }}
+        dateNumberStyle={{ color: "#666666", fontSize: 16 }}
+        dateNameStyle={{ color: "#666666", fontSize: 12 }}
         highlightDateNumberStyle={{
-          color: 'white',
-          backgroundColor: 'black',
+          color: "white",
+          backgroundColor: "black",
           width: 24,
           height: 24,
-          textAlign: 'center',
+          textAlign: "center",
           lineHeight: 24,
           borderRadius: 12,
-          overflow: 'hidden',
+          overflow: "hidden",
           fontSize: 16,
         }}
-        highlightDateNameStyle={{ color: '#666666', fontSize: 12 }}
-        styleWeekend={false}
+        highlightDateNameStyle={{ color: "#666666", fontSize: 12 }}
         selectedDate={selectedDate}
         onDateSelected={handleDateSelected}
-        useNativeDriver
-        scrollable
+        minDate={minDate}
+        maxDate={maxDate}
+        scrollable={true}
       />
-      <Text style={styles.info}>Your daily karma gauge is shown above.</Text>
+      {/* Interactive gauge for daily karma */}
+      <InteractiveGauge value={karma} />
+      {/* (Other sections such as recent actions can follow) */}
     </View>
   );
 }
 
+export default HomeScreen;
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 40,
-    alignItems: 'center',
-  },
-  gaugeContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  calendar: {
-    height: 100,
-    paddingTop: 20,
-    paddingBottom: 10,
-  },
-  info: {
-    marginTop: 20,
-    fontSize: 16,
-    color: '#333',
-  },
+  container: { flex: 1, padding: 20 },
+  header: { fontSize: 24, fontWeight: 'bold', marginBottom: 20 },
+  calendar: { height: 100, paddingVertical: 10 },
 }); 

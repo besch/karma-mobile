@@ -2,6 +2,8 @@
 
 import { KarmaAction, UserProfile } from "./types";
 
+export const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:3000';
+
 export async function analyzeMedia(mediaUrl: string): Promise<{ analysis?: string, error?: string }> {
   const res = await fetch(`${process.env.EXPO_PUBLIC_SERVER_URL}/api/ai/analyze`, {
     method: 'POST',
@@ -20,14 +22,12 @@ export async function createKarmaAction(data: KarmaAction): Promise<{ message?: 
   return res.json();
 }
 
-export async function fetchNearbyKarmaActions(latitude: number, longitude: number, radius?: number): Promise<{ actions?: KarmaAction[]; error?: string }> {
-  const queryParams = new URLSearchParams({
-    latitude: latitude.toString(),
-    longitude: longitude.toString(),
-    radius: (radius || 5000).toString(),
-  });
-  const res = await fetch(`${process.env.EXPO_PUBLIC_SERVER_URL}/api/karma/nearby?${queryParams.toString()}`);
-  return res.json();
+export async function fetchNearbyKarmaActions(lat: number, lon: number) {
+  const response = await fetch(`${API_BASE_URL}/api/karma/nearby?lat=${lat}&lon=${lon}`);
+  if (!response.ok) {
+    throw new Error('Error fetching nearby actions');
+  }
+  return response.json();
 }
 
 export async function getUserProfile(userId: string): Promise<{ profile?: UserProfile; error?: string }> {
