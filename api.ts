@@ -1,6 +1,6 @@
 // This file centralizes all mobile API requests.
 
-import { KarmaAction } from "./types";
+import { KarmaAction, UserProfile } from "./types";
 
 export async function analyzeMedia(mediaUrl: string): Promise<{ analysis?: string, error?: string }> {
   const res = await fetch(`${process.env.EXPO_PUBLIC_SERVER_URL}/api/ai/analyze`, {
@@ -20,7 +20,7 @@ export async function createKarmaAction(data: KarmaAction): Promise<{ message?: 
   return res.json();
 }
 
-export async function fetchNearbyKarmaActions(latitude: number, longitude: number, radius?: number): Promise<{ actions?: any[]; error?: string }> {
+export async function fetchNearbyKarmaActions(latitude: number, longitude: number, radius?: number): Promise<{ actions?: KarmaAction[]; error?: string }> {
   const queryParams = new URLSearchParams({
     latitude: latitude.toString(),
     longitude: longitude.toString(),
@@ -30,7 +30,7 @@ export async function fetchNearbyKarmaActions(latitude: number, longitude: numbe
   return res.json();
 }
 
-export async function getUserProfile(userId: string): Promise<{ profile?: any; error?: string }> {
+export async function getUserProfile(userId: string): Promise<{ profile?: UserProfile; error?: string }> {
   const queryParams = new URLSearchParams({ userId });
   const res = await fetch(`${process.env.EXPO_PUBLIC_SERVER_URL}/api/users/profile?${queryParams.toString()}`);
   return res.json();
