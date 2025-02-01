@@ -72,4 +72,11 @@ export async function fetchLeaderboard(): Promise<{ leaderboard?: any[]; error?:
   const url = `${process.env.EXPO_PUBLIC_API_BASE_URL}/api/leaderboard/index`;
   const res = await fetch(url);
   return res.json();
-} 
+}
+
+export async function fetchUserAnalytics(userId: string): Promise<{ actions?: any[]; error?: string }> {
+  const queryParams = new URLSearchParams({ userId });
+  const url = `${process.env.EXPO_PUBLIC_API_BASE_URL}/api/users/analytics?${queryParams.toString()}`;
+  const res = await fetch(url);
+  return res.json();
+}

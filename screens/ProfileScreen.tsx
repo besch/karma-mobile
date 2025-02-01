@@ -1,14 +1,21 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Button } from 'react-native';
 import { useQuery } from 'react-query';
 // Import the user store to identify the logged in user.
 import { useUserStore } from '../state/userStore';
 import { getUserImpact, fetchUserBadges } from '@/api';
 import ImpactChart from '@/components/ImpactChart';
 import { BadgeList } from '@/components/BadgeList';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+
+type RootStackParamList = {
+  Analytics: undefined;
+  // ... other routes if needed
+};
 
 export default function ProfileScreen() {
   const { user } = useUserStore();
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   // If not logged in, show a message.
   if (!user) {
@@ -49,6 +56,7 @@ export default function ProfileScreen() {
           ) : (
             <BadgeList badges={badgeData?.badges || []} />
           )}
+          <Button title="View Analytics" onPress={() => navigation.navigate('Analytics')} />
         </>
       )}
       {/* Additional metrics, leaderboards, impact charts, etc. can be added here */}
