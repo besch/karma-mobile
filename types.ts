@@ -1,25 +1,28 @@
 // Common types for the mobile app
 
 export interface KarmaAction {
-  id: string;
-  user_id: string;
+  id?: string;
+  user_id?: string;
   action_type: string;
-  description: string;
-  points: number;
+  description?: string;
+  points?: number;
   media_url: string;
-  media_type: string;
-  ai_analysis: Record<string, any>;
-  geolocation: any; // Adjust this type if you have a stricter definition
-  created_at: string;
+  media_type?: string;
+  ai_analysis?: any;
+  geolocation: {
+      latitude: number;
+      longitude: number;
+  };
+  created_at?: string;
 }
 
 export interface UserProfile {
   id: string;
   email: string;
   name?: string;
-  created_at: string;
-  notification_enabled: boolean;
-  is_anonymous: boolean;
+  created_at?: string;
+  notification_enabled?: boolean;
+  is_anonymous?: boolean;
 }
 
 export interface AnalyzeMediaResponse {

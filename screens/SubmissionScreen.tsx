@@ -3,19 +3,13 @@ import { View, Button, Image, Text, StyleSheet } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useMutation } from 'react-query';
 import { supabase } from '../utils/supabase';
+import { analyzeMedia } from '@/api';
 
 export default function SubmissionScreen() {
   const [media, setMedia] = useState<string | null>(null);
 
-  // Mutation to send the media URL to your AI endpoint for analysis
-  const { mutate: analyzeMedia } = useMutation(async (mediaUrl: string) => {
-    const response = await fetch('https://your-server-domain/api/ai/analyze', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ mediaUrl }),
-    });
-    return response.json();
-  });
+  // Mutation using the shared API function
+  const { mutate: analyzeMediaMutation } = useMutation((mediaUrl: string) => analyzeMedia(mediaUrl));
 
   const pickMedia = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -33,8 +27,8 @@ export default function SubmissionScreen() {
         });
       if (!error && data?.path) {
         const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(data.path);
-        // Trigger the AI analysis endpoint
-        analyzeMedia(publicUrl);
+        // Trigger the AI analysis endpoint using the imported API function via mutation
+        analyzeMediaMutation(publicUrl);
       }
     }
   };

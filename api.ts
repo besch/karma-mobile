@@ -2,10 +2,8 @@
 
 import { KarmaAction, UserProfile } from "./types";
 
-export const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:3000';
-
 export async function analyzeMedia(mediaUrl: string): Promise<{ analysis?: string, error?: string }> {
-  const res = await fetch(`${process.env.EXPO_PUBLIC_SERVER_URL}/api/ai/analyze`, {
+  const res = await fetch(`${process.env.EXPO_PUBLIC_API_BASE_URL}/api/ai/analyze`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ mediaUrl }),
@@ -14,7 +12,7 @@ export async function analyzeMedia(mediaUrl: string): Promise<{ analysis?: strin
 }
 
 export async function createKarmaAction(data: KarmaAction): Promise<{ message?: string; error?: string }> {
-  const res = await fetch(`${process.env.EXPO_PUBLIC_SERVER_URL}/api/karma/create`, {
+  const res = await fetch(`${process.env.EXPO_PUBLIC_API_BASE_URL}/api/karma/create`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
@@ -23,7 +21,7 @@ export async function createKarmaAction(data: KarmaAction): Promise<{ message?: 
 }
 
 export async function fetchNearbyKarmaActions(lat: number, lon: number) {
-  const response = await fetch(`${API_BASE_URL}/api/karma/nearby?lat=${lat}&lon=${lon}`);
+  const response = await fetch(`${process.env.EXPO_PUBLIC_API_BASE_URL}/api/karma/nearby?lat=${lat}&lon=${lon}`);
   if (!response.ok) {
     throw new Error('Error fetching nearby actions');
   }
@@ -32,12 +30,18 @@ export async function fetchNearbyKarmaActions(lat: number, lon: number) {
 
 export async function getUserProfile(userId: string): Promise<{ profile?: UserProfile; error?: string }> {
   const queryParams = new URLSearchParams({ userId });
-  const res = await fetch(`${process.env.EXPO_PUBLIC_SERVER_URL}/api/users/profile?${queryParams.toString()}`);
+  const res = await fetch(`${process.env.EXPO_PUBLIC_API_BASE_URL}/api/users/profile?${queryParams.toString()}`);
+  return res.json();
+}
+
+export async function getUserImpact(userId: string): Promise<{ totalKarma?: number; error?: string }> {
+  const queryParams = new URLSearchParams({ userId });
+  const res = await fetch(`${process.env.EXPO_PUBLIC_API_BASE_URL}/api/users/impact?${queryParams.toString()}`);
   return res.json();
 }
 
 export async function sendNotification(userId: string, message: string): Promise<{ message?: string; error?: string }> {
-  const res = await fetch(`${process.env.EXPO_PUBLIC_SERVER_URL}/api/notifications/create`, {
+  const res = await fetch(`${process.env.EXPO_PUBLIC_API_BASE_URL}/api/notifications/create`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ userId, message }),

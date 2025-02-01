@@ -6,8 +6,8 @@ interface GaugeProps {
 }
 
 export const InteractiveGauge: React.FC<GaugeProps> = ({ value }) => {
-  // Simple animated value for gauge fill (stub animation)
-  const animatedValue = new Animated.Value(0);
+  // Use a ref so the Animated.Value persists over renders.
+  const animatedValue = React.useRef(new Animated.Value(0)).current;
 
   React.useEffect(() => {
     Animated.timing(animatedValue, {

@@ -3,7 +3,7 @@ import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import MapView, { Marker, Region } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { useQuery } from 'react-query';
-import { fetchNearbyKarmaActions } from '../api';
+import { fetchNearbyKarmaActions } from '@/api';
 
 export function MapScreen() {
   const [region, setRegion] = React.useState<Region | null>(null);
