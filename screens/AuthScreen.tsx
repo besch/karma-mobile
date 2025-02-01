@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Platform, Alert, View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import * as AppleAuthentication from 'expo-apple-authentication';
-import { supabase } from '../utils/supabase';
+import { supabase } from '@/utils/supabase';
 import LottieView from 'lottie-react-native';
 
 interface AuthScreenProps {

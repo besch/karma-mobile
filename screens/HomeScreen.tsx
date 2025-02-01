@@ -4,6 +4,10 @@ import CalendarStrip from "react-native-calendar-strip";
 import moment from 'moment';
 import InteractiveGauge from '@/components/InteractiveGauge';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { useUserStore } from '../state/userStore';
+import { usePushNotifications } from '../hooks/usePushNotifications';
+import { useRealtimeNotifications } from '../hooks/useRealtimeNotifications';
+import { Colors, Typography } from '../theme';
 
 type RootStackParamList = {
   Profile: undefined;
@@ -14,10 +18,16 @@ type RootStackParamList = {
 
 export default function HomeScreen() {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const { user } = useUserStore();
   const [selectedDate, setSelectedDate] = React.useState(moment());
   const [karma, setKarma] = React.useState(70); // stub: fetch actual karma from the store or API
   const minDate = moment().subtract(7, 'days');
   const maxDate = moment().add(7, 'days');
+
+  // Always register for push notifications.
+  usePushNotifications();
+  // Subscribe to realtime notifications even if user is not yet set; hook checks for userId.
+  useRealtimeNotifications(user?.id || '');
 
   const handleDateSelected = (date: moment.Moment) => {
     setSelectedDate(date);
@@ -44,8 +54,25 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flexGrow: 1, alignItems: 'center', padding: 20, justifyContent: 'center' },
-  title: { fontSize: 28, fontWeight: 'bold', marginBottom: 20 },
-  subtitle: { fontSize: 20, marginVertical: 10 },
-  buttonContainer: { width: '100%', marginTop: 20, justifyContent: 'space-around', height: 200 }
+  container: { 
+    flexGrow: 1, 
+    alignItems: 'center', 
+    padding: 20, 
+    justifyContent: 'center', 
+    backgroundColor: Colors.background 
+  },
+  title: { 
+    ...Typography.header, 
+    marginBottom: 20 
+  },
+  subtitle: { 
+    ...Typography.title, 
+    marginVertical: 10 
+  },
+  buttonContainer: { 
+    width: '100%', 
+    marginTop: 20, 
+    justifyContent: 'space-around', 
+    height: 200 
+  },
 }); 

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Button, Image, Text, StyleSheet } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useMutation } from 'react-query';
-import { supabase } from '../utils/supabase';
+import { supabase } from '@/utils/supabase';
 import { analyzeMedia } from '@/api';
 
 export default function SubmissionScreen() {
