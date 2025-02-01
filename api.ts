@@ -34,7 +34,7 @@ export async function getUserProfile(userId: string): Promise<{ profile?: UserPr
   return res.json();
 }
 
-export async function getUserImpact(userId: string): Promise<{ totalKarma?: number; error?: string }> {
+export async function getUserImpact(userId: string): Promise<{ totalKarma?: number; weeklyImpact?: number[]; error?: string }> {
   const queryParams = new URLSearchParams({ userId });
   const res = await fetch(`${process.env.EXPO_PUBLIC_API_BASE_URL}/api/users/impact?${queryParams.toString()}`);
   return res.json();
@@ -46,5 +46,30 @@ export async function sendNotification(userId: string, message: string): Promise
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ userId, message }),
   });
+  return res.json();
+}
+
+export async function fetchChallenges(active: boolean = false): Promise<{ challenges?: any[]; error?: string }> {
+  const url = `${process.env.EXPO_PUBLIC_API_BASE_URL}/api/challenges/list${active ? '?active=true' : ''}`;
+  const res = await fetch(url);
+  return res.json();
+}
+
+export async function fetchBadges(): Promise<{ badges?: any[]; error?: string }> {
+  const url = `${process.env.EXPO_PUBLIC_API_BASE_URL}/api/badges/list`;
+  const res = await fetch(url);
+  return res.json();
+}
+
+export async function fetchUserBadges(userId: string): Promise<{ badges?: any[]; error?: string }> {
+  const queryParams = new URLSearchParams({ userId });
+  const url = `${process.env.EXPO_PUBLIC_API_BASE_URL}/api/user/badges?${queryParams.toString()}`;
+  const res = await fetch(url);
+  return res.json();
+}
+
+export async function fetchLeaderboard(): Promise<{ leaderboard?: any[]; error?: string }> {
+  const url = `${process.env.EXPO_PUBLIC_API_BASE_URL}/api/leaderboard/index`;
+  const res = await fetch(url);
   return res.json();
 } 

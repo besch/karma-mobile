@@ -3,7 +3,9 @@ import { View, Text, StyleSheet } from 'react-native';
 import { useQuery } from 'react-query';
 // Import the user store to identify the logged in user.
 import { useUserStore } from '../state/userStore';
-import { getUserImpact } from '@/api';
+import { getUserImpact, fetchUserBadges } from '@/api';
+import ImpactChart from '@/components/ImpactChart';
+import { BadgeList } from '@/components/BadgeList';
 
 export default function ProfileScreen() {
   const { user } = useUserStore();
@@ -23,6 +25,12 @@ export default function ProfileScreen() {
     { enabled: !!user }
   );
 
+  const { data: badgeData, isLoading: badgesLoading, error: badgesError } = useQuery(
+    ['userBadges', user.id],
+    () => fetchUserBadges(user.id),
+    { enabled: !!user }
+  );
+
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Profile & Impact Report</Text>
@@ -33,7 +41,14 @@ export default function ProfileScreen() {
       ) : (
         <>
           <Text>Your total karma points: {data?.totalKarma || 0}</Text>
-          <Text>Achievements: Volunteer, Donor, Eco Champion</Text>
+          <ImpactChart impactData={data?.weeklyImpact} />
+          {badgesLoading ? (
+            <Text>Loading badges...</Text>
+          ) : badgesError ? (
+            <Text>Error loading badges.</Text>
+          ) : (
+            <BadgeList badges={badgeData?.badges || []} />
+          )}
         </>
       )}
       {/* Additional metrics, leaderboards, impact charts, etc. can be added here */}
