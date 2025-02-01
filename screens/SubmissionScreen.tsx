@@ -23,18 +23,18 @@ export default function SubmissionScreen() {
       quality: 1,
     });
 
-    if (!result.cancelled) {
-      setMedia(result.uri);
+    if (!result.canceled && result.assets && result.assets.length > 0) {
+      setMedia(result.assets[0].uri);
       // Upload the media file to Supabase Storage
       const { data, error } = await supabase.storage
         .from('media')
-        .upload(`uploads/${Date.now()}`, result.uri, {
-          contentType: result.type === ImagePicker.MediaTypeOptions.Videos ? 'video/mp4' : 'image/jpeg',
+        .upload(`uploads/${Date.now()}`, result.assets[0].uri, {
+          contentType: result.assets[0].type === 'video' ? 'video/mp4' : 'image/jpeg',
         });
       if (!error && data?.path) {
-        const { publicURL } = supabase.storage.from('media').getPublicUrl(data.path);
+        const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(data.path);
         // Trigger the AI analysis endpoint
-        analyzeMedia(publicURL);
+        analyzeMedia(publicUrl);
       }
     }
   };

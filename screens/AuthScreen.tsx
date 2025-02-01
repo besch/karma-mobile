@@ -38,7 +38,7 @@ export default function AuthScreen({ onAuthSuccess }: AuthScreenProps) {
         if (signInData.user) {
           const user = {
             id: signInData.user.id,
-            email: signInData.user.email,
+            email: signInData.user.email!,
             name: credential.fullName
               ? `${credential.fullName.givenName} ${credential.fullName.familyName}`
               : undefined,
