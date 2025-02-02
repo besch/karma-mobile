@@ -3,6 +3,7 @@ import { Platform, Alert, View, Text, TextInput, Button, StyleSheet } from 'reac
 import * as AppleAuthentication from 'expo-apple-authentication';
 import { supabase } from '@/utils/supabase';
 import LottieView from 'lottie-react-native';
+import { router } from 'expo-router';
 
 interface AuthScreenProps {
   onAuthSuccess?: (user: { id: string; email: string; name?: string }) => void;
@@ -48,7 +49,11 @@ export default function AuthScreen({ onAuthSuccess, navigation }: AuthScreenProp
               ? `${credential.fullName.givenName} ${credential.fullName.familyName}`
               : undefined,
           };
-          onAuthSuccess && onAuthSuccess(user);
+          if (onAuthSuccess) {
+            onAuthSuccess(user);
+          } else {
+            router.replace('/(tabs)');
+          }
         }
       }
     } catch (e) {
@@ -57,14 +62,13 @@ export default function AuthScreen({ onAuthSuccess, navigation }: AuthScreenProp
   };
 
   const handleLogin = () => {
-    // Implement your login logic (e.g., with Supabase authentication)
-    navigation.navigate('Home');
+    router.replace('/(tabs)');
   };
 
   return (
     <View style={styles.container}>
       <LottieView
-        source={require('../assets/animation.json')}
+        source={require("@/assets/animations/confetti.json")}
         autoPlay
         loop
         style={styles.lottie}
