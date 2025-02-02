@@ -9,7 +9,13 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "bundleIdentifier": "com.vinobyte.karmameter",
+      "supportsTablet": true,
+      "usesAppleSignIn": true,
+      "buildNumber": "3",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Karmameter needs camera access to analyze your images."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -31,6 +37,17 @@
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
+        }
+      ],
+      "expo-camera",
+      "expo-notifications",
+      "expo-apple-authentication",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "minSdkVersion": 26
+          }
         }
       ]
     ],

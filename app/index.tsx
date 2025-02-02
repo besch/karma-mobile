@@ -11,7 +11,6 @@ export default function App() {
 
   const checkInitialRoute = async () => {
     try {
-      // Check if user data exists in AsyncStorage
       const storedUser = await AsyncStorage.getItem('user')
       if (storedUser) {
         const user = JSON.parse(storedUser)
@@ -33,6 +32,5 @@ export default function App() {
     }
   }
 
-  // Return empty view while checking
   return null
 }
