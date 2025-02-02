@@ -9,18 +9,15 @@ import { usePushNotifications } from '../hooks/usePushNotifications';
 import { useRealtimeNotifications } from '../hooks/useRealtimeNotifications';
 import { Colors, Typography } from '../theme';
 
-type RootStackParamList = {
-  Profile: undefined;
-  Analytics: undefined;
-  PublicFeed: undefined;
-  Groups: undefined;
-};
+// Adjusted navigation types for HomeStack
+import { HomeStackParamList } from '../App';
 
 export default function HomeScreen() {
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  // Here, navigation is of type NavigationProp<HomeStackParamList>
+  const navigation = useNavigation<NavigationProp<HomeStackParamList>>();
   const { user } = useUserStore();
   const [selectedDate, setSelectedDate] = React.useState(moment());
-  const [karma, setKarma] = React.useState(70); // stub: fetch actual karma from the store or API
+  const [karma, setKarma] = React.useState(70); // stub: fetch actual karma from store or API
   const minDate = moment().subtract(7, 'days');
   const maxDate = moment().add(7, 'days');
 
@@ -44,7 +41,8 @@ export default function HomeScreen() {
       <InteractiveGauge value={currentKarma} maxValue={nextLevel} />
       <Text style={styles.subtitle}>Your Karma: {currentKarma}</Text>
       <View style={styles.buttonContainer}>
-        <Button title="View Profile" onPress={() => navigation.navigate('Profile')} />
+        {/* "Profile" is a bottom-tab. Hence, navigate using getParent() */}
+        <Button title="View Profile" onPress={() => navigation.getParent()?.navigate('Profile')} />
         <Button title="View Analytics" onPress={() => navigation.navigate('Analytics')} />
         <Button title="Public Feed" onPress={() => navigation.navigate('PublicFeed')} />
         <Button title="Groups" onPress={() => navigation.navigate('Groups')} />
@@ -73,6 +71,12 @@ const styles = StyleSheet.create({
     width: '100%', 
     marginTop: 20, 
     justifyContent: 'space-around', 
-    height: 200 
+    height: 200,
+    // Added subtle shadow for better UI feedback
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 3,
   },
 }); 

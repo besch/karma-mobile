@@ -13,6 +13,13 @@ export function InteractiveGauge({ value, maxValue }: { value: number; maxValue:
     extrapolate: 'clamp',
   });
 
+  // Animate the stroke color from red to green as the value increases
+  const animatedColor = animatedValue.interpolate({
+    inputRange: [0, maxValue],
+    outputRange: ['red', '#4caf50'],
+    extrapolate: 'clamp',
+  });
+
   React.useEffect(() => {
     Animated.timing(animatedValue, {
       toValue: value,
@@ -33,7 +40,7 @@ export function InteractiveGauge({ value, maxValue }: { value: number; maxValue:
           strokeWidth="10"
         />
         <AnimatedCircle
-          stroke="#4caf50"
+          stroke={animatedColor} // Use the animated color for the gauge
           fill="none"
           cx="60"
           cy="60"

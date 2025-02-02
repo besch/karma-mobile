@@ -27,7 +27,7 @@ export default function SubmissionScreen() {
         });
       if (!error && data?.path) {
         const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(data.path);
-        // Trigger the AI analysis endpoint using the imported API function via mutation
+        // Trigger the AI analysis endpoint using the GPT-4o-mini vision model via mutation
         analyzeMediaMutation(publicUrl);
       }
     }

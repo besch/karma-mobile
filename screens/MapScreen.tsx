@@ -4,6 +4,7 @@ import MapView, { Marker, Region } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { useQuery } from 'react-query';
 import { fetchNearbyKarmaActions } from '@/api';
+import { IconSymbol } from '@/components/ui/IconSymbol';
 
 export function MapScreen() {
   const [region, setRegion] = React.useState<Region | null>(null);
@@ -59,9 +60,11 @@ export function MapScreen() {
             <Marker
               key={action.id}
               coordinate={{ latitude: action.latitude, longitude: action.longitude }}
-              title={action.action_type}
-              description={action.description}
-            />
+            >
+              <View style={styles.customMarker}>
+                <IconSymbol name="map.fill" size={24} color="blue" />
+              </View>
+            </Marker>
           ))}
       </MapView>
     </>
@@ -73,4 +76,11 @@ const styles = StyleSheet.create({
   map: { flex: 1 },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   filterContainer: { flexDirection: 'row', justifyContent: 'space-around', marginVertical: 10 },
+  customMarker: {
+    backgroundColor: 'white',
+    padding: 5,
+    borderRadius: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 }); 
