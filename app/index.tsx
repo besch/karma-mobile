@@ -1,6 +1,8 @@
 import { useEffect } from 'react'
 import { router } from 'expo-router'
 import { supabase } from '@/utils/supabase'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useUserStore } from '@/state/userStore'
 
 export default function App() {
   useEffect(() => {
@@ -9,6 +11,15 @@ export default function App() {
 
   const checkInitialRoute = async () => {
     try {
+      // Check if user data exists in AsyncStorage
+      const storedUser = await AsyncStorage.getItem('user')
+      if (storedUser) {
+        const user = JSON.parse(storedUser)
+        useUserStore.getState().setUser(user)
+        router.replace('/(tabs)')
+        return
+      }
+
       const { data: { session } } = await supabase.auth.getSession()
       
       if (session) {

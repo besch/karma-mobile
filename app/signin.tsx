@@ -1,6 +1,9 @@
 import { Platform, Alert, View } from 'react-native'
 import * as AppleAuthentication from 'expo-apple-authentication'
 import { supabase } from '@/utils/supabase'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { router } from 'expo-router'
+import { useUserStore } from '@/state/userStore'
 
 interface AuthProps {
   onAuthSuccess?: (user: {
@@ -58,7 +61,14 @@ export default function Signin({ onAuthSuccess }: AuthProps) {
                       ? `${credential.fullName.givenName} ${credential.fullName.familyName}`
                       : undefined,
                   }
+                  // Update Zustand store with user data.
+                  useUserStore.getState().setUser(user)
+                  // Save user data in AsyncStorage.
+                  await AsyncStorage.setItem('user', JSON.stringify(user))
+                  // Invoke onAuthSuccess callback if provided.
                   onAuthSuccess?.(user)
+                  // Redirect to the (tabs) index screen.
+                  router.replace('/(tabs)')
                 }
               }
             } catch (e: unknown) {
