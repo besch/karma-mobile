@@ -1,20 +1,27 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { router } from 'expo-router'
 import { supabase } from '@/utils/supabase'
 
 export default function App() {
-  const [isMounted, setIsMounted] = useState(false)
-
   useEffect(() => {
-    setIsMounted(true)
-    // checkInitialRoute()
+    checkInitialRoute()
   }, [])
 
-  useEffect(() => {
-    if (isMounted) {
-      router.replace('/(tabs)')
+  const checkInitialRoute = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      
+      if (session) {
+        router.replace('/(tabs)')
+      } else {
+        router.replace('/signin')
+      }
+    } catch (error) {
+      console.error('Error checking initial route:', error)
+      router.replace('/signin')
     }
-  }, [isMounted])
+  }
 
+  // Return empty view while checking
   return null
 }
